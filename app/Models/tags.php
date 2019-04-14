@@ -24,6 +24,22 @@ class tags extends Model
     protected $dates = ['deleted_at'];
 
 
+    public static function getTagArray($str) {
+		
+		$tags = explode(',',$str); 
+		$result =array(); 
+		
+		foreach ($tags as $tag)
+		{
+			if (strlen(trim($tag))>2)
+				$result[]=  $tag ;
+		}
+		
+		 
+		return $result; 
+	}
+	
+	
     public $fillable = [
         'tag'
     ];

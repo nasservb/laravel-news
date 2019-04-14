@@ -30,6 +30,9 @@ class status extends Model
         'description'
     ];
 
+
+ 
+	
     /**
      * The attributes that should be casted to native types.
      *

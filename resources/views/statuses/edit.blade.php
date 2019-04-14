@@ -2,9 +2,9 @@
 
 @section('content')
     <section class="content-header">
-        <h1>
+        <h2>
             Status
-        </h1>
+        </h2>
    </section>
    <div class="content">
        @include('adminlte-templates::common.errors')

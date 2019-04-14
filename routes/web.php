@@ -22,26 +22,27 @@ Route::get('/home', 'HomeController@index');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index');
 
+Route::group(['middleware' => ['auth:web', 'role:manager'],'namespace'=>'Admin'], function() {
 
-//Route::group(['middleware' => 'App\Http\Middleware\AdminMiddleware'], function()
-//{
-Route::resource('users', 'usersController');
+	Route::resource('dashboard', 'dashboardController');
+	
+	Route::resource('users', 'usersController');
 
-Route::resource('pictures', 'pictureController');
+	Route::resource('pictures', 'pictureController');
 
-Route::resource('categories', 'categoryController');
+	Route::resource('categories', 'categoryController');
 
-Route::resource('statuses', 'statusController');
+	Route::resource('statuses', 'statusController');
 
-Route::resource('tags', 'tagsController');
+	Route::resource('tags', 'tagsController');
 
-Route::resource('news', 'newsController');
+	Route::resource('news', 'newsController');
 
-Route::resource('newsMetas', 'news_metaController');
+	Route::resource('newsMetas', 'news_metaController');
 
-Route::resource('common', 'common');
+	Route::resource('common', 'common');
 
-Route::post('common/uploadAjaxFile', 'common@uploadAjaxFile');
-//});
+	Route::post('common/uploadAjaxFile', 'common@uploadAjaxFile');
+
+});

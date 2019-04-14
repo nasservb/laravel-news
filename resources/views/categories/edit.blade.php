@@ -2,9 +2,9 @@
 
 @section('content')
     <section class="content-header">
-        <h1>
-            Category
-        </h1>
+        <h2>
+            دسته ها
+        </h2>
    </section>
    <div class="content">
        @include('adminlte-templates::common.errors')

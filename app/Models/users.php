@@ -36,6 +36,19 @@ class users extends Model
         'password',
         'remember_token'
     ];
+	
+	public static function getDisplayName($userId) 
+	{
+		$user =  users::where('id', '=',$userId)
+					->get(['id','name'])
+					->toArray();
+		if (count($user)==0 )
+			return ''; 
+		else 
+			return $user['0']['name'];
+	}
+
+
 
     /**
      * The attributes that should be casted to native types.

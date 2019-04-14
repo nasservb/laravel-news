@@ -1,10 +1,10 @@
 <table class="table table-responsive" id="newsMetas-table">
     <thead>
         <tr>
-            <th>Meta Key</th>
-        <th>Meta Value</th>
-        <th>News Id</th>
-            <th colspan="3">Action</th>
+            <th>کلید</th>
+        <th>مقدار</th>
+        <th>خبر</th>
+            <th colspan="3">عملیات</th>
         </tr>
     </thead>
     <tbody>
@@ -16,9 +16,9 @@
             <td>
                 {!! Form::open(['route' => ['newsMetas.destroy', $newsMeta->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>
-                    <a href="{!! route('newsMetas.show', [$newsMeta->id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
-                    <a href="{!! route('newsMetas.edit', [$newsMeta->id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-edit"></i></a>
-                    {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                    <a href="{!! route('newsMetas.show', [$newsMeta->id]) !!}" class='btn btn-default btn-xs'><i class="pe-7s-look"></i></a>
+                    <a href="{!! route('newsMetas.edit', [$newsMeta->id]) !!}" class='btn btn-default btn-xs'><i class="pe-7s-edit"></i></a>
+                    {!! Form::button('<i class="pe-7s-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('آیا مطمعن هستید؟')"]) !!}
                 </div>
                 {!! Form::close() !!}
             </td>

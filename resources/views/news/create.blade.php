@@ -1,27 +1,25 @@
 @extends('layouts.app')
 
+@section('css')
+
+<link href="{!!  URL::asset('css/selectize.bootstrap3.css') !!}" rel="stylesheet" type="text/css">
 <link href="{!!  URL::asset('css/persianDatepicker-default.css') !!}" rel="stylesheet" type="text/css">
  
 
 <link href="{!!  URL::asset('css/dropzone.css') !!}" rel="stylesheet" type="text/css">
-
-<script src="{!!  URL::asset('js/jquery.min.js') !!}"></script>
-
-<script src="{!!  URL::asset('js/selectize.min.js') !!}"></script>
-
-
-
-<script src="{!!  URL::asset('js/persianDatepicker.min.js') !!}"></script>
-<script src="{!!  URL::asset('js/dropzone.min.js') !!}"></script>
-
-<script src="{!!  URL::asset('tinymce/tinymce.min.js') !!}"></script>
-
+ @endsection
 
 @section('content')
+<style>
+	input[type=checkbox]{width:35px}
+</style>
+
+
+
     <section class="content-header">
-        <h1>
+        <h2>
             اخبار
-        </h1>
+        </h2>
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
@@ -64,9 +62,9 @@
                          
                         <select  name="tag[]" class="form-control" multiple id="input-tags" >
                                                               
-                            @foreach($tags as $tag )
+                            @foreach($tags as $id => $value )
                             {
-                                <option   value="{{ $tag }}">{{ $tag }}</option> 
+                                <option   value="{{ $value }}">{{ $value }}</option> 
                             }                                    
                             @endforeach
                                      
@@ -101,25 +99,17 @@
                     </div>
 
 
+
+					
                     <div class="form-group col-sm-12 col-lg-6">
                         {!! Form::label('pictures', 'تصاویر :') !!}              
-                        <small>(عکس  کم حجم)</small>
-                        
+                        <small>(عکس  کم حجم)</small>                        
                          
-                        <div id="dropzone" class="dropzone"></div>
-                        
+                        <div id="dropzone" class="dropzone"></div>                        
                                     
                     </div>
-                    @section('scripts')
-                    <script>var myDropzone = new Dropzone("#dropzone", {url: "{!! url('common/uploadAjaxFile?key='.$imageKey) !!}",maxFilesize:1024,params:{"_token":"{{ csrf_token() }}"}});</script>
-
-                        <script type="text/javascript">
-                            $('#updeted_at').datetimepicker({
-                                format: 'YYYY-MM-DD HH:mm:ss',
-                                useCurrent: false
-                            })
-                        </script>
-                    @endsection
+					
+                 
 
                     <!-- Submit Field -->
                     <div class="form-group col-sm-12">
@@ -134,70 +124,94 @@
         </div>
     </div>
 
-    <script type="text/javascript">
-   
-        $(document).ready(function () {
-            
-            tinymce.init({
-                selector: "textarea",
-                themes: "modern",   
-                plugins: [
-                    "advlist autolink lists link image charmap print preview anchor",
-                    "searchreplace visualblocks code fullscreen textcolor",
-                    "insertdatetime media table contextmenu paste directionality imagetools"
-                ],
-                toolbar: "insertfile undo redo forecolor backcolor| styleselect | bold italic  ltr rtl | alignleft aligncenter alignright alignjustify | bullist numlist| link image "   
-                , file_picker_types: 'image'
-                ,relative_urls : false
-                ,remove_script_host : false
-                ,convert_urls : true
-                ,images_upload_url:"{!! url('common/ajaxUploadFile?key='.$imageKey )!!}"
-                ,images_upload_base_path:"{{url('/')}}"
-                ,images_upload_handler: function (blobInfo, success, failure) {
-                        var xhr, formData;
-
-                        xhr = new XMLHttpRequest();
-                        xhr.withCredentials = false;
-                        xhr.open('POST', "{!! url('common/ajaxUploadFile/?key='.$imageKey ) !!}");
-
-                        xhr.onload = function() {
-                          var json;
-
-                          if (xhr.status != 200) {
-                            failure('HTTP Error: ' + xhr.status);
-                            return;
-                          }
-
-                          json = JSON.parse(xhr.responseText);
-
-                          if (!json || typeof json.location != 'string') {
-                            failure('Invalid JSON: ' + xhr.responseText);
-                            return;
-                          }
-
-                          success(json.location);
-                        };
-
-                        formData = new FormData();
-                        formData.append('file', blobInfo.blob(), blobInfo.filename());
-
-                        xhr.send(formData);
-                      }
-            });
-            
-            
-        });
-   
-    </script>  
-
-    <script>
-       
-        $(document).ready(function () {
-            $('#input-tags').selectize({ create: true  });    
-            
-
-        });
-   
-  </script>
+    
                
+@endsection
+
+
+@section('scripts')
+<script src="{!!  URL::asset('js/selectize.min.js') !!}"></script>
+
+<script src="{!!  URL::asset('js/persianDatepicker.min.js') !!}"></script>
+<script src="{!!  URL::asset('js/dropzone.min.js') !!}"></script>
+
+<script src="{!!  URL::asset('tinymce/tinymce.min.js') !!}"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(function () {
+		
+		tinymce.init({
+			selector: "textarea",
+			themes: "modern",   
+			plugins: [
+				"advlist autolink lists link image charmap print preview anchor",
+				"searchreplace visualblocks code fullscreen textcolor",
+				"insertdatetime media table contextmenu paste directionality imagetools"
+			],
+			toolbar: "insertfile undo redo forecolor backcolor| styleselect | bold italic  ltr rtl | alignleft aligncenter alignright alignjustify | bullist numlist| link image "   
+			, file_picker_types: 'image'
+			,relative_urls : false
+			,remove_script_host : false
+			,convert_urls : true
+			,images_upload_url:"{!! url('common/ajaxUploadFile?key='.$imageKey )!!}"
+			,images_upload_base_path:"{{url('/')}}"
+			,images_upload_handler: function (blobInfo, success, failure) {
+					var xhr, formData;
+
+					xhr = new XMLHttpRequest();
+					xhr.withCredentials = false;
+					xhr.open('POST', "{!! url('common/ajaxUploadFile/?key='.$imageKey ) !!}");
+
+					xhr.onload = function() {
+					  var json;
+
+					  if (xhr.status != 200) {
+						failure('HTTP Error: ' + xhr.status);
+						return;
+					  }
+
+					  json = JSON.parse(xhr.responseText);
+
+					  if (!json || typeof json.location != 'string') {
+						failure('Invalid JSON: ' + xhr.responseText);
+						return;
+					  }
+
+					  success(json.location);
+					};
+
+					formData = new FormData();
+					formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+					xhr.send(formData);
+				  }
+		});
+		
+		
+	});
+
+</script>  
+
+<script>
+   
+	$(document).ready(function () {
+		$('#input-tags').selectize({ create: true  });   
+
+	});
+
+</script>
+
+<script>var myDropzone = new Dropzone("#dropzone", {url: "{!! url('common/uploadAjaxFile?key='.$imageKey) !!}",maxFilesize:1024,params:{"_token":"{{ csrf_token() }}"}});</script>
+
+	<script type="text/javascript">
+	
+	$(document).ready(function () {
+		$('#created_at').datetimepicker({
+			format: 'YYYY-MM-DD HH:mm:ss',
+			useCurrent: false
+		});
+	});
+	
+	</script>
 @endsection

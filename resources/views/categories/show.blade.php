@@ -2,16 +2,16 @@
 
 @section('content')
     <section class="content-header">
-        <h1>
-            Category
-        </h1>
+        <h2>
+            دسته ها
+        </h2>
     </section>
     <div class="content">
         <div class="box box-primary">
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('categories.show_fields')
-                    <a href="{!! route('categories.index') !!}" class="btn btn-default">Back</a>
+                    <a href="{!! route('categories.index') !!}" class="btn btn-default">برگشت</a>
                 </div>
             </div>
         </div>
