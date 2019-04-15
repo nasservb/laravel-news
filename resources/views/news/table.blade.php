@@ -11,17 +11,15 @@
         </tr>
     </thead>
     <tbody>
-    @foreach($news as $news)
+    @foreach($news as $newsInner)
         <tr>
-            <td>{!! $news->title !!}</td>
+            <td>{!! $newsInner->title !!}</td>
             <td>
                 @php
-                    $tags = explode(',',$news->tag); 
-                     
-                    foreach ($tags as $tag)
+                
+                    foreach ($newsInner->tags as $tag)
                     {
-                        if (strlen(trim($tag))>2)
-                            echo '<a class="btn-sm" href="'.url('tags/'.$tag).'">'. $tag .'</a>';
+                        echo '<a class="btn-sm" href="'.url('tags/'.$tag->tag).'">'. $tag->tag .'</a>';
                     }
                 @endphp 
             </td>
@@ -29,22 +27,18 @@
 
             <td>
                 @php
-
-                $cats = explode(',',$news->categories);
-
-                foreach($cats as $cat)
-                    if (intval($cat)>0)
-                        echo '<a class="btn-sm" href="'.url('category/'.$cat).'">'. $categories[$cat] .'</a>';
+ 
+                foreach($newsInner->categories() as $cat) 
+                        echo '<a class="btn-sm" href="'.url('category/'.$cat->title).'">'. $cat->title .'</a>';
                 @endphp 
             </td>
-            <td>{!! \App\Models\users::getDisplayName($news->user_id ) !!} </td>
+            <td>{!! \App\Models\users::getDisplayName($newsInner->user_id ) !!} </td>
             <td>{!! $statuses[$news->status_id] !!}</td>
 
-            <td>{!! \Morilog\Jalali\Jalalian::forge( $news->created_at)->ago() !!}</td>
+            <td>{!! \Morilog\Jalali\Jalalian::forge( $newsInner->created_at)->ago() !!}</td>
             <td>
-                {!! Form::open(['route' => ['news.destroy', $news->id], 'method' => 'delete']) !!}
+                {!! Form::open(['route' => ['news.destroy', $newsInner->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>
-                    <a href="{!! route('news.show', [$news->id]) !!}" class='btn btn-default btn-xs'><i class="pe-7s-look"></i></a>
                     <a href="{!! route('news.edit', [$news->id]) !!}" class='btn btn-default btn-xs'><i class="pe-7s-edit"></i></a>
                     {!! Form::button('<i class="pe-7s-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('آیا مطمعن هستید؟')"]) !!}
                 </div>

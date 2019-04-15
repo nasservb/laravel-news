@@ -64,7 +64,7 @@
                                                               
                             @foreach($tags as $id => $value )
                             {
-                                <option   value="{{ $value }}">{{ $value }}</option> 
+                                <option   value="{{ $id }}">{{ $value }}</option> 
                             }                                    
                             @endforeach
                                      
@@ -204,14 +204,14 @@
 
 <script>var myDropzone = new Dropzone("#dropzone", {url: "{!! url('common/uploadAjaxFile?key='.$imageKey) !!}",maxFilesize:1024,params:{"_token":"{{ csrf_token() }}"}});</script>
 
-	<script type="text/javascript">
-	
-	$(document).ready(function () {
-		$('#created_at').datetimepicker({
-			format: 'YYYY-MM-DD HH:mm:ss',
-			useCurrent: false
-		});
-	});
-	
-	</script>
+<script type="text/javascript">
+
+$(document).ready(function () {
+    $('#created_at').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm:ss',
+        useCurrent: false
+    });
+});
+
+</script>
 @endsection

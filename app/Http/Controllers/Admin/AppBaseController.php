@@ -28,4 +28,28 @@ class AppBaseController extends Controller
     {
         return Response::json(ResponseUtil::makeError($error), $code);
     }
+
+    
+    public function ToIndexedArray($inArray  ) 
+    {
+        $result = array() ;
+        
+        foreach($inArray as $item )
+        { 
+            if (isset( $item['title'] )) 
+            {
+                $result[$item['id']  ] = $item['title']  ;
+            }
+            elseif (isset( $item['name'] )) 
+            {
+                $result[$item['id']  ] = $item['name']  ;
+            }
+            else 
+            {
+                $result[$item['id']  ] = $item['tag']  ;
+            }
+             
+        }
+        return $result;
+    }
 }

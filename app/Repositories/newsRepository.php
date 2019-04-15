@@ -21,8 +21,8 @@ class newsRepository extends BaseRepository
         'content',
         'picture_id',
         'pictures',
-        'tag',
-        'categories',
+        //'tag',
+        //'categories',
         'user_id',
         'status_id',
         'updated_at'

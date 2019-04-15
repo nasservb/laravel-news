@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\tags;
+use App\Models\category;
 
 /**
  * Class news
@@ -14,8 +16,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string content
  * @property integer picture_id
  * @property string pictures
- * @property string tag
- * @property string categories
  * @property integer user_id
  * @property integer status_id
  * @property string|\Carbon\Carbon updeted_at
@@ -38,8 +38,8 @@ class news extends Model
         'content',
         'picture_id',
         'pictures',
-        'tag',
-        'categories',
+       // 'tag',
+       // 'categories',
         'user_id',
         'status_id',
         'updated_at'
@@ -56,12 +56,29 @@ class news extends Model
         'content' => 'string',
         'picture_id' => 'integer',
         'pictures' => 'string',
-        'tag' => 'string',
-        'categories' => 'string',
+        //'tag' => 'string',
+        //'categories' => 'string',
         'user_id' => 'integer',
         'status_id' => 'integer',
         'updated_at' => 'datetime'
     ];
+
+    /**
+     * The news that belong to the tags.
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(tags::class);
+    }
+
+    
+    /**
+     * The news that belong to the category.
+     */
+    public function categories()
+    {
+        return $this->belongsToMany(category::class,'news_category');
+    }
 
     /**
      * Validation rules

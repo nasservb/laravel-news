@@ -24,4 +24,8 @@
 		<a href="{!! route('users.index') !!}"><i class="pe-7s-users"></i><p>کاربران</p></a>
 	</li>
 
+
+	<li class="{{ Request::is('Role*') ? 'active' : '' }}">
+		<a href="{!! route('Role.index') !!}"><i class="pe-7s-user"></i><p>نقش ها</p></a>
+	</li>
 </ul>

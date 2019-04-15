@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\news;
 
 /**
  * Class category
@@ -71,5 +72,14 @@ class category extends Model
         'title' => 'required'
     ];
 
+    
+    
+    /**
+     * The news that belong to the category.
+     */
+    public function news()
+    {
+        return $this->belongsToMany(news::class,'news_category');
+    }
     
 }

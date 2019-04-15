@@ -13,9 +13,9 @@ use App\Http\Controllers\Admin\AppBaseController;
 
 use App\Models\category;
 use App\Models\status;
-use App\Models\tags;
 
-use App\Models\news_tag;
+use App\Models\tags; 
+use App\Models\news; 
 
 use App\Models\picture ;
 
@@ -47,11 +47,11 @@ class newsController extends AppBaseController
      */
     public function index(Request $request)
     {
-       $data['news'] = $this->newsRepository->all();
+       $data['news'] = $this->newsRepository->paginate(10);
 		
-       $data['categories']=$this->toIndexedArray((new category())->all()->toArray());
+       $data['categories']=$this->ToIndexedArray((new category())->all()->toArray());
 		
-       $data['statuses']=$this->toIndexedArray((new status())->all()->toArray());
+       $data['statuses']=$this->ToIndexedArray((new status())->all()->toArray());
 		
 		
 
@@ -70,11 +70,11 @@ class newsController extends AppBaseController
         
         $data['imageKey']=time();
 
-        $data['categories']=$this->toIndexedArray((new category())->all()->toArray());
+        $data['categories']=$this->ToIndexedArray((new category())->all()->toArray());
 		
-        $data['statuses']=$this->toIndexedArray((new status())->all()->toArray());
+        $data['statuses']=$this->ToIndexedArray((new status())->all()->toArray());
 
-        $data['tags']=$this->toIndexedArray((new tags())->all()->toArray());
+        $data['tags']=$this->ToIndexedArray((new tags())->all()->toArray());
 
 
         return view('news.create',$data);
@@ -92,32 +92,41 @@ class newsController extends AppBaseController
     {
         $input = $request->all();
         
+        $validator = Validator::make($request->all(),[
+            'title'=>'string|required',
+            'content'=>'string|nullable', 
+        ]);
+       
+ 
+        if($validator->fails())
+        {  
+            if($validator->fails()){
+                return back()->withErrors(['err'=>'عنوان مطلب وارد نشده است.'])->withInput();
+            }
+        }
+
+
         $input['user_id']=Auth::user()->id;
 
-        $input['categories']= implode($input['categories'], ',');
+
+
 
         $tags = $input['tag']; 
 
         $input['tag'] = ''; 
 
-       /*
-        $validator = Validator::make($request->all(),[
-            'title'=>'string|required',
-            'content'=>'string|nullable',
-            'under_title'=>'string|nullable',
-            'mobile'=>'required|regex:/^09[0-3][0-9]{8}$/u'
-        ]);
-       
-
-        if($validator->fails())
-        {
-
-        }
-
- */
+ 
         $news = $this->newsRepository->create($input);
 
 
+        if (isset($input['categories']) ) 
+        {
+            $inputCats = tags::find($input['categories']);
+         
+            $news->categories()->attach($inputCats); 
+ 
+        }
+        
          
         $pictures = picture::where('user_id','=',Auth::user()->id)
                             ->where('item_type','=',$input['key'])
@@ -136,55 +145,34 @@ class newsController extends AppBaseController
         $news->pictures = $pics; 
 
         $news->save(); 
-
-        news_tag::where('news_id','=',$news->id)
-                        ->delete(); 
-                
-
-        $lastTags = $this->toIndexedArray( (new tags())->all()->toArray());
-
+ 
+        $lastTags = $this->ToIndexedArray( (new tags())->all()->toArray());
      
+ 
+        $newKey = array_values($tags);
 
-        $inputTag = ''; 
-
-        
-        foreach ($tags as $key => $value) {
-            $inputTag .= $value .',';
-        }
-    
         if (count($tags)> 0)
         {
             foreach ($tags as $key => $value) {
 
-                if (!in_array($value, array_values($lastTags)))
+                if (!array_key_exists($value,$lastTags))
                 { 
+
                     $insertingTag = new tags(); 
 
                     $insertingTag->tag = $value;
-                    $insertingTag->save();
-                     
 
-                    $key = $insertingTag->id ; 
-                }
-                else 
-                {
-                    $key = array_search ( $value, $lastTags);
-                }
-                
-                            
-                news_tag::insert( array(
-                                        'news_id' => $news->id,
-                                        'tag_id' => $key,
-                                        ));
+                    $insertingTag->save();                     
+                    
+                    $newKey[] = $insertingTag->id; 
 
-            }
+                }               
 
-            $news->tag = $inputTag;
-
-            $news->save(); 
-
-
+            } 
         }
+
+        $inputTags = tags::find($newKey);
+        $news->tags()->attach($inputTags);
 
         Flash::success('News saved successfully.');  
 
@@ -222,13 +210,29 @@ class newsController extends AppBaseController
     {
         $news = $this->newsRepository->find($id);
 
+       
+
+
         if (empty($news)) {
             Flash::error('News not found');
 
             return redirect(route('news.index'));
         }
+        
+        $data=array(); 
+        
+        $data['imageKey']=time();
 
-        return view('news.edit')->with('news', $news);
+        $data['categories']=$this->ToIndexedArray((new category())->all()->toArray());
+		
+        $data['statuses']=$this->ToIndexedArray((new status())->all()->toArray());
+
+        $data['tags']=$this->ToIndexedArray((new tags())->all()->toArray());
+
+        $data['news']=$news;
+
+        return view('news.edit', $data);
+
     }
 
     /**
@@ -249,7 +253,54 @@ class newsController extends AppBaseController
             return redirect(route('news.index'));
         }
 
-        $news = $this->newsRepository->update($request->all(), $id);
+
+        $validator = Validator::make($request->all(),[
+            'title'=>'string|required',
+            'content'=>'string|nullable', 
+        ]);
+       
+ 
+        if($validator->fails())
+        {  
+            if($validator->fails()){
+                return back()->withErrors(['err'=>'عنوان مطلب وارد نشده است.'])->withInput();
+            }
+        }
+
+        $input = $request->all();
+
+        $newTags = $input['tag']; 
+
+
+        $lastTags = $this->ToIndexedArray( (new tags())->all()->toArray());
+
+    
+        $newKey = array_values($newTags);
+        //calculate new tag and insert that, when it exsist in db
+        if (count($newTags)> 0)
+        {
+            foreach ($newTags as $key => $value) {
+
+                if (!array_key_exists($value,$lastTags))
+                { 
+                    $insertingTag = new tags(); 
+
+                    $insertingTag->tag = $value;
+                    $insertingTag->save();  
+
+                    $newKey[] = $insertingTag->id ; 
+                } 
+
+            }
+        }
+
+        $news->tags()->sync($newKey ); 
+
+          
+        $news->categories()->sync($input['categories']); 
+ 
+        $news = $this->newsRepository->update($input, $id);
+
 
         Flash::success('News updated successfully.');
 
@@ -283,26 +334,4 @@ class newsController extends AppBaseController
     }
 
 
-    private function toIndexedArray($inArray  ) 
-    {
-        $result = array() ;
-        
-        foreach($inArray as $item )
-        { 
-            if (isset( $item['title'] )) 
-            {
-                $result[$item['id']  ] = $item['title']  ;
-            }
-            elseif (isset( $item['name'] )) 
-            {
-                $result[$item['id']  ] = $item['name']  ;
-            }
-            else 
-            {
-                $result[$item['id']  ] = $item['tag']  ;
-            }
-             
-        }
-        return $result;
-    }
 }

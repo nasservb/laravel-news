@@ -9,14 +9,26 @@
     </thead>
     <tbody>
     @foreach($users as $users)
-        <tr>
+        <tr> 
             <td>{!! $users->name !!}</td>
             <td>{!! $users->email !!}</td> 
-            <td>{!! $users->remember_token !!}</td>
+            
+            <td>
+            @php 
+               
+                foreach( Auth::user($users->id)->roles as $role)
+                {                      
+                    echo  '<span class="btn">'.$role->name.'</span>' ;                 
+                }
+ 
+
+            @endphp 
+            </td>
+
             <td>
                 {!! Form::open(['route' => ['users.destroy', $users->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>
-                    <a href="{!! route('users.show', [$users->id]) !!}" class='btn btn-default btn-xs'><i class="pe-7s-look"></i></a>
+                
                     <a href="{!! route('users.edit', [$users->id]) !!}" class='btn btn-default btn-xs'><i class="pe-7s-edit"></i></a>
                     {!! Form::button('<i class="pe-7s-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('آیا مطمعن هستید؟')"]) !!}
                 </div>

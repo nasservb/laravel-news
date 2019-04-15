@@ -1,41 +1,20 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
-use App\User;
-use App\Http\Requests\CreateusersRequest;
-use App\Http\Requests\UpdateusersRequest;
-
-use App\Repositories\usersRepository;
+ 
 use App\Http\Controllers\Admin\AppBaseController;
-
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
-
 use Illuminate\Http\Request;
 use Flash;
 use Response;
-use Auth;
- 
+
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
-class usersController extends AppBaseController
+class RoleManager extends AppBaseController
 {
-    use RegistersUsers;
-
-    /** @var  usersRepository */
-    private $usersRepository;
-
-    public function __construct(usersRepository $usersRepo)
-    {
-        $this->usersRepository = $usersRepo;
-    }
-
     /**
-     * Display a listing of the users.
+     * Display a listing of the Role.
      *
      * @param Request $request
      *
@@ -43,27 +22,26 @@ class usersController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $users = $this->usersRepository->all();
-       
+        $roles =Role::all(); 
 
-        return view('users.index')->with('users', $users);
+        return view('role.index')
+                 ->with('roles', $roles);
     }
 
+
     /**
-     * Show the form for creating a new users.
+     * Show the form for creating a new Role.
      *
      * @return Response
      */
     public function create()
     {
-        $roles =Role::all(); 
-        //$roles =Role::all(); 
-
-        return view('users.create')->with('roles', $roles);
+        
+        return view('role.create');
     }
 
     /**
-     * Store a newly created users in storage.
+     * Store a newly created Role in storage.
      *
      * @param CreateusersRequest $request
      *
@@ -75,36 +53,21 @@ class usersController extends AppBaseController
 
 
         if ( !Validator::make($input, [
-                    'name' => ['required', 'string', 'max:255'],
-                    'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                    'password' => ['required', 'string', 'min:8', 'confirmed'],
+                    'name' => ['required', 'string', 'max:255','unique:roles'],
                 ]))
         {
-            return back()->withErrors(['err'=>'نام، ایمیل یا رمز عبورصحیح وارد نشده است.'])->withInput();
+            return back()->withErrors(['err'=>'نام صحیح وارد نشده است.'])->withInput();
         }
+ 
+        $role = Role::create(['name' => $input['name']]);
 
-        $users =  User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'password' => Hash::make($input['password']),
-        ]);
-
-
-
-        //$users = $this->usersRepository->create($input);
-
-
-        $user = Auth::user($users->id); 
-
-        $user->syncRoles(array_values($input['roles']) );
-
-        Flash::success('Users saved successfully.');
+        Flash::success('Role saved successfully.');
 
         return redirect(route('users.index'));
     }
 
     /**
-     * Display the specified users.
+     * Display the specified Role.
      *
      * @param int $id
      *
@@ -112,19 +75,19 @@ class usersController extends AppBaseController
      */
     public function show($id)
     {
-        $users = $this->usersRepository->find($id);
+        // $users = $this->usersRepository->find($id);
 
-        if (empty($users)) {
-            Flash::error('Users not found');
+        // if (empty($users)) {
+        //     Flash::error('Users not found');
 
-            return redirect(route('users.index'));
-        }
+        //     return redirect(route('users.index'));
+        // }
 
-        return view('users.show')->with('users', $users);
+        // return view('users.show')->with('users', $users);
     }
 
     /**
-     * Show the form for editing the specified users.
+     * Show the form for editing the specified Role.
      *
      * @param int $id
      *
@@ -233,4 +196,6 @@ class usersController extends AppBaseController
 
         return redirect(route('users.index'));
     }
+
+
 }

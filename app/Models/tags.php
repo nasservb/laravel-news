@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\news;
 
 /**
  * Class tags
@@ -53,6 +54,15 @@ class tags extends Model
         'id' => 'integer',
         'tag' => 'string'
     ];
+
+
+    /**
+     * The news that belong to the tags.
+     */
+    public function news()
+    {
+        return $this->belongsToMany(news::class);
+    }
 
     /**
      * Validation rules

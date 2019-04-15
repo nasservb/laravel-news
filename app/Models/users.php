@@ -5,6 +5,10 @@ namespace App\Models;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 /**
  * Class users
  * @package App\Models
@@ -17,7 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string remember_token
  */
 class users extends Model
-{
+{ 
     use SoftDeletes;
 
     public $table = 'users';
@@ -37,6 +41,11 @@ class users extends Model
         'remember_token'
     ];
 	
+    public static function getRoleNames($userId) 
+    {
+
+    }
+
 	public static function getDisplayName($userId) 
 	{
 		$user =  users::where('id', '=',$userId)
@@ -70,9 +79,7 @@ class users extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required',
-        'email' => 'required',
-        'password' => 'required'
+        'name' => 'required', 
     ];
 
     
