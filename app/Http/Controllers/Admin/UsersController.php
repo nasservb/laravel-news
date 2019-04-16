@@ -175,7 +175,7 @@ class usersController extends AppBaseController
 
 
 
-        if (isset($input['password']))
+        if (isset($input['password']) && $input['password'] != '')
         {
             if(!Validator::make($input, [
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -190,12 +190,15 @@ class usersController extends AppBaseController
             $input['password']= Hash::make($input['password']);
 
         } 
-
+        else 
+        {
+            $input['password']= Hash::make($users->password);
+        }
 
 
 
         
-        $users = $this->usersRepository->update($request->all(), $id);
+        $users = $this->usersRepository->update($input, $id);
 
         $user = Auth::user($users->id); 
         

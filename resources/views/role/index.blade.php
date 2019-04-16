@@ -4,12 +4,11 @@
     <section class="content-header">
         <h2 class="pull-right">نقش ها</h2>
         <h2 class="pull-left">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('users.create') !!}">افزودن</a>
+           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('role.create') !!}">افزودن</a>
         </h2>
     </section>
     <div class="content">
         <div class="clearfix"></div>
-
         @include('flash::message')
 
         <div class="clearfix"></div>

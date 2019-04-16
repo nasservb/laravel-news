@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth:web', 'role:manager'],'namespace'=>'Admin']
 
 	Route::resource('common', 'common');
 
-	Route::resource('Role', 'RoleManager'); 
+	Route::resource('role', 'RoleManager'); 
 
 	Route::post('common/uploadAjaxFile', 'common@uploadAjaxFile');
 

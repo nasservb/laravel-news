@@ -14,10 +14,10 @@
            
 
             <td>
-                {!! Form::open(['route' => ['Role.destroy', $role->id], 'method' => 'delete']) !!}
+                {!! Form::open(['route' => ['role.destroy', $role->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>
                 
-                    <a href="{!! route('Role.edit', [$role->id]) !!}" class='btn btn-default btn-xs'><i class="pe-7s-config"></i></a>
+                    <a href="{!! route('role.edit', [$role->id]) !!}" class='btn btn-default btn-xs'><i class="pe-7s-config"></i></a>
                     {!! Form::button('<i class="pe-7s-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('آیا مطمعن هستید؟')"]) !!}
                 </div>
                 {!! Form::close() !!}

@@ -25,7 +25,7 @@
 	</li>
 
 
-	<li class="{{ Request::is('Role*') ? 'active' : '' }}">
-		<a href="{!! route('Role.index') !!}"><i class="pe-7s-user"></i><p>نقش ها</p></a>
+	<li class="{{ Request::is('role*') ? 'active' : '' }}">
+		<a href="{!! route('role.index') !!}"><i class="pe-7s-user"></i><p>نقش ها</p></a>
 	</li>
 </ul>

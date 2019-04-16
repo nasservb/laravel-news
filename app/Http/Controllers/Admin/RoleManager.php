@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -47,7 +49,7 @@ class RoleManager extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateusersRequest $request)
+    public function store(Request $request )
     {
         $input = $request->all();
 
@@ -63,7 +65,7 @@ class RoleManager extends AppBaseController
 
         Flash::success('Role saved successfully.');
 
-        return redirect(route('users.index'));
+        return redirect(route('role.index'));
     }
 
     /**
@@ -181,20 +183,24 @@ class RoleManager extends AppBaseController
      * @return Response
      */
     public function destroy($id)
-    {
-        $users = $this->usersRepository->find($id);
+    { 
 
-        if (empty($users)) {
-            Flash::error('Users not found');
+        $model  = Role::where('id','=',$id) ;
+ 
+        if (empty($model)) {
+            Flash::error('Role not found');
 
-            return redirect(route('users.index'));
+            return redirect(route('role.index'));
         }
 
-        $this->usersRepository->delete($id);
+       
 
-        Flash::success('Users deleted successfully.');
 
-        return redirect(route('users.index'));
+        $model->delete();
+
+        Flash::success('Role deleted successfully.');
+
+        return redirect(route('role.index'));
     }
 
 
